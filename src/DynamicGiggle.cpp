@@ -5,7 +5,7 @@
 #ifdef __linux__
 static int getLibraryHandle(const char *libraryPath, int mode, void **phandle) noexcept
 #elif _WIN32
-static int getLibraryHandle(LPCSTR, DWORD mode, HMODULE *pmodule) noexcept
+static int getLibraryHandle(LPCSTR libraryPath, DWORD mode, HMODULE *pmodule) noexcept
 #endif
 {
 #ifdef __linux__
@@ -15,8 +15,8 @@ static int getLibraryHandle(LPCSTR, DWORD mode, HMODULE *pmodule) noexcept
     }
     return 0;
 #elif _WIN32
-    BOOL status = GetModuleHandleExA(mode, libraryPath, &_handle);
-    if (status == 0) {
+    *pmodule = LoadLibraryA(libraryPath);
+    if (*pmodule == nullptr) {
         return -1;
     }
     return 0;
@@ -45,7 +45,7 @@ static std::string nativeGetError() noexcept
 #ifdef __linux__
 void *DynamicGiggle::getSymbol(const char *symbol) const noexcept
 #elif _WIN32
-FARPROC getSymbol(LPCSTR lpProcName) const noexcept;
+FARPROC DynamicGiggle::getSymbol(LPCSTR lpProcName) const noexcept
 #endif
 {
 #ifdef __linux

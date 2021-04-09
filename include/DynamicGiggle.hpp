@@ -6,8 +6,8 @@
 #ifdef __linux__
 #include <dlfcn.h>
 #elif _WIN32
-#include <libloaderapi.h>
 #include <windows.h>
+#include <libloaderapi.h>
 #endif
 
 class DynamicGiggle {
