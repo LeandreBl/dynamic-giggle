@@ -2,6 +2,14 @@
 
 #include "DynamicGiggle.hpp"
 
+static bool endsWith(const std::string &str, const std::string &with)
+{
+    if (with.size() > str.size()) {
+        return false;
+    }
+    return std::equal(with.rbegin(), with.rend(), str.rbegin());
+}
+
 #ifdef __linux__
 static int getLibraryHandle(const char *libraryPath, int mode, void **phandle) noexcept
 #elif _WIN32
@@ -41,6 +49,14 @@ static std::string nativeGetError() noexcept
     return msg;
 #endif
 }
+
+const std::string DynamicGiggle::SHARED_OBJECT_SUFFIX =
+#ifdef __linux__
+".so"
+#elif _WIN32
+".dll"
+#endif
+;
 
 #ifdef __linux__
 void *DynamicGiggle::getSymbol(const char *symbol) const noexcept
@@ -119,7 +135,21 @@ bool DynamicGiggle::isOpen() const noexcept
 {
     return _handle != nullptr;
 }
+
 const std::string &DynamicGiggle::getLibraryPath() const noexcept
 {
     return _libraryName;
+}
+
+std::string DynamicGiggle::addLibrarySuffix(const std::string &str) noexcept
+{
+    if (!endsWith(str, SHARED_OBJECT_SUFFIX))
+        return str + SHARED_OBJECT_SUFFIX;
+    return str;
+}
+
+void DynamicGiggle::addLibrarySuffix(std::string &str) noexcept
+{
+    if (!endsWith(str, SHARED_OBJECT_SUFFIX))
+        str += SHARED_OBJECT_SUFFIX;
 }

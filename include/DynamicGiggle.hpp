@@ -12,6 +12,7 @@
 
 class DynamicGiggle {
 public:
+    static const std::string SHARED_OBJECT_SUFFIX;
     enum Mode {
 #ifdef __linux__
         DELAYED_RESOLVE = RTLD_LAZY,
@@ -47,6 +48,9 @@ public:
 
     bool isOpen() const noexcept;
     const std::string &getLibraryPath() const noexcept;
+    static std::string addLibrarySuffix(const std::string &str) noexcept;
+    static void addLibrarySuffix(std::string &str) noexcept;
+
 
 private:
     std::string _libraryName;
