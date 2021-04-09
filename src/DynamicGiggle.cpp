@@ -88,6 +88,7 @@ void DynamicGiggle::open(const std::string &dynamicLibraryPath, int mode)
     if (res != 0) {
         throw std::invalid_argument(getError());
     }
+    _libraryName = dynamicLibraryPath;
 }
 
 void DynamicGiggle::close()
@@ -96,6 +97,7 @@ void DynamicGiggle::close()
         throw std::invalid_argument(getError());
     }
     _handle = nullptr;
+    _libraryName.clear();
 }
 
 DynamicGiggle::~DynamicGiggle() noexcept
@@ -111,4 +113,13 @@ DynamicGiggle::~DynamicGiggle() noexcept
 std::string DynamicGiggle::getError() const noexcept
 {
     return nativeGetError();
+}
+
+bool DynamicGiggle::isOpen() const noexcept
+{
+    return _handle != nullptr;
+}
+const std::string &DynamicGiggle::getLibraryPath() const noexcept
+{
+    return _libraryName;
 }

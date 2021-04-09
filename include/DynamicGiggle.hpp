@@ -45,7 +45,11 @@ public:
         return std::function<T>(f);
     }
 
+    bool isOpen() const noexcept;
+    const std::string &getLibraryPath() const noexcept;
+
 private:
+    std::string _libraryName;
     std::string getError() const noexcept;
 #ifdef __linux__
     void *_handle;
