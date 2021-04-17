@@ -36,14 +36,27 @@ public:
     ~DynamicGiggle() noexcept;
 
     template <typename T>
-    std::function<T> get(const std::string &symbol) const
+    std::function<T> getFunction(const std::string &symbol) const
     {
-        auto f = reinterpret_cast<T *>(getSymbol(symbol.c_str()));
+        return std::function<T>(get<T>(symbol));
+    }
 
-        if (f == nullptr) {
+    template <typename T>
+    T &getGlobal(const std::string &symbol) const
+    {
+        return get<T>(symbol);
+    }
+
+    template <typename T>
+    T &get(const std::string &symbol) const
+    {
+        auto sym = reinterpret_cast<T *>(getSymbol(symbol.c_str()));
+
+        if (sym == nullptr) {
             throw std::invalid_argument(getError());
         }
-        return std::function<T>(f);
+        return *sym;
+
     }
 
     bool isOpen() const noexcept;

@@ -24,11 +24,29 @@ int main(int ac, char **av)
 
     // As an example we use a shared library containing a strlen and strchr implementation
 
+    // returns a C like function pointer
     auto f = lib.get<size_t(const char *)>("strlen");
     std::cout << f("salut") << std::endl;
 
-    auto f2 = lib.get<char *(const char *, int)>("strchr");
+    // returns a C++ std::function
+    auto f2 = lib.getFunction<char *(const char *, int)>("strchr");
     std::cout << f2("salut", 'l') << std::endl;
+
+    // returns a global variable by reference
+    auto &g = lib.get<size_t>("my_tiny_global");
+    std::cout << g << std::endl;
+    g++;
+
+    // explicitly returns a global variable reference
+    auto &g2 = lib.getGlobal<size_t>("my_tiny_global");
+    std::cout << g2 << std::endl;
+    g2++;
+
+    // explicitly returns a global variable copy
+    auto g3 = lib.getGlobal<size_t>("my_tiny_global");
+    // g3 is equal to the initial global value + 2
+    std::cout << g3 << std::endl;
+
     return 0;
 }
 ```
